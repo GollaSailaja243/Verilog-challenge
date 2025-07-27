@@ -1,0 +1,38 @@
+// Code your design here
+module mux1x2(
+  input i,
+  input s,
+  output reg [1:0]y
+); 
+  always@(*)
+    begin
+      case(s)
+        0:y[0]=i;
+        1:y[1]=i;
+        
+        default:y='x;
+      endcase
+    end
+endmodule
+////////////////////////////////////////////////
+          // Code your testbench here
+// or browse Examples
+module tb;
+  reg i;
+  reg s;
+  wire [1:0]y;
+  mux1x2 dut(i,s,y);
+ initial begin
+   $monitor(" i:%b || s:%b || y:%b",i,s,y);
+ end
+  initial begin
+    #5i=0;s=0;
+    #5i=1;s=0;
+    #5i=0;s=1;
+    #5i=1;s=1;
+    
+  end
+  
+  
+  
+endmodule
