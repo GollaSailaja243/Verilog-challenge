@@ -1,0 +1,47 @@
+// Code your design here
+module fa(
+input a,b,c,
+output s,ca
+);
+assign s=a^b^c,
+       ca=(a&b)|(b&c)|(c&a);
+endmodule
+/////////////////////////////////
+module add(
+  input [2:0]a,b,
+  output [2:0]s,
+  output ca,
+);
+  wire [1:0]c;
+  fa f1(a[0],b[0],0,s[0],c[0]);
+  fa f2(a[1],b[1],c[0],s[1],c[1]);
+  fa f3(a[2],b[2],c[1],s[2],ca);
+  
+endmodule
+////////////////////////////////////////////////////
+// Code your testbench here
+// or browse Examples
+module tb;
+  reg [2:0]a,b;
+  
+  wire [2:0]s;
+  wire ca;
+  
+  add dut(a,b,s,ca);
+  
+  initial begin
+    $monitor("a:%d || b:%d || ca:%b || s:%b  ",a,b,ca,s);
+  
+    for (int j=0;j<8;j++)begin
+      a=j;
+      b=j;
+      #10;
+    end
+    
+  end
+  
+  
+  
+endmodule
+
+
