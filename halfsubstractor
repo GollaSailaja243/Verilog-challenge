@@ -1,0 +1,34 @@
+
+module ha(
+  input a,b,
+  output reg s,d
+); 
+  always@(*)
+    begin
+     s=a^b;
+      d=~a&b;
+    end
+endmodule
+///////////////////////////////
+//////////////////////////////////////
+// Code your testbench here
+// or browse Examples
+module tb;
+  reg a,b;
+  
+  wire s,c;
+  ha dut(a,b,s,c);
+  
+  initial begin
+    $monitor("a:%b || b:%b || d:%b || s:%b  ",a,b,c,s);
+  
+    for (int j=0;j<4;j++)begin
+      {a,b}=j;
+      #10;
+    end
+    
+  end
+  
+  
+  
+endmodule
