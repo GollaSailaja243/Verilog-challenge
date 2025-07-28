@@ -1,0 +1,37 @@
+// Code your design here
+module fa(
+  input a,b,c,
+  output reg bo,d
+); 
+  always@(*)
+    begin
+     d=a^b^c;
+      bo=(~a&b)|(b&c)|(c&~a);
+    end
+endmodule
+///////////////////////////////////
+/////////////////////////////
+// Code your testbench here
+// or browse Examples
+module tb;
+  reg a,b,c;
+  
+  wire bo;
+  wire d;
+  
+  fa dut(a,b,c,bo,d);
+  
+  initial begin
+    $monitor("a:%b || b:%b || c:%b || b0:%b || d:%b  ",a,b,c,bo,d);
+  
+    for (int j=0;j<8;j++)begin
+      {a,b,c}=j;
+      #10;
+    end
+    
+  end
+  
+  
+  
+endmodule
+
