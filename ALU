@@ -1,0 +1,50 @@
+// Code your design here
+module ALU (
+    input [2:0] Control,  
+  input [7:0] A,      
+  input [7:0] B,      
+  output reg [8:0] Result, 
+            
+);
+
+always @(*) begin
+    case (Control)
+        3'b000: Result = A & B;               
+        3'b001: Result = A | B;                
+        3'b010: Result = A + B;                
+        3'b011: Result = 0;                         
+        3'b100: Result = A & ~B;               
+        3'b101: Result = A | ~B;               
+        3'b110: Result = A - B;               
+        3'b111: Result = (A < B) ? 1 : 0;     
+        default: Result = 0;                        
+    endcase
+
+    
+end
+
+endmodule
+//////////////////////////////////////////
+// Code your testbench here
+// or browse Examples
+module tb;
+  reg[7:0]A,B;
+  reg[2:0]Control;
+  wire [8:0]Result;
+  
+  ALU dut(Control,A,B,Result);
+  
+  initial begin
+    $monitor("Control :%b || A:%b || b:%b || Result :%b",Control,A,B,Result);
+    for(int i=0;i<10;i++)begin
+      A=$urandom;
+      B=$urandom;
+      Control=$urandom;
+      #10;
+      
+    end
+    
+  end
+  
+  
+endmodule
