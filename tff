@@ -1,0 +1,49 @@
+module tff(
+  input clk, rst, t,
+  output reg qn
+);
+
+  always @(posedge clk) begin
+    if (rst)
+      qn <= 0;   
+    else begin
+      if(t)
+        qn <= ~qn; 
+        else
+        qn <= qn;   
+         
+       
+      end
+  end
+endmodule
+///////////////////////////////////////////////////////////
+module tb;
+  
+  wire qn;
+  reg t,clk,rst;
+  
+  initial begin
+  clk = 0;
+  rst = 1;      
+  t   = 0;      
+  #15 rst = 0;  
+end
+
+  always #5 clk= ~clk;
+  tff dut(clk,rst,t,qn);
+  
+  initial begin
+    $monitor("t:%b  || qn:%b ",t,qn);
+    for(int i=0;i<10;i++)begin
+      t=$urandom;
+      
+      #10;
+    end
+   #100 $finish;
+  end
+  initial begin
+    $dumpfile("dump.vcd");
+    $dumpvars;
+  end
+  
+endmodule
