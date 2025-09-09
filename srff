@@ -1,0 +1,50 @@
+module srff(
+  input clk, rst, s, r,
+  output reg qn
+);
+
+  always @(posedge clk) begin
+    if (rst)
+      qn <= 0;   
+    else begin
+      case ({s,r})
+        2'b00: qn <= qn;   
+        2'b01: qn <= 0;   
+        2'b10: qn <= 1;    
+        2'b11: qn <= 'bx; 
+        default:qn<=0;
+      endcase
+    end
+  end
+endmodule
+///////////////////////////////
+
+module tb;
+  
+  wire qn;
+  reg s,r,clk,rst;
+  
+  initial begin
+    clk=0;
+    rst=0;
+    #10 rst=1;
+    rst=0;
+  end
+  always #5clk=~clk;
+  srff dut(clk,rst,s,r,qn);
+  
+  initial begin
+    $monitor("s:%b  || r :%b  || qn:%b ",s,r,qn);
+    for(int i=0;i<10;i++)begin
+      s=$urandom;
+      r=$urandom;
+      #10;
+    end
+   #110 $finish;
+  end
+  initial begin
+    $dumpfile("dump.vcd");
+    $dumpvars;
+  end
+  
+endmodule
