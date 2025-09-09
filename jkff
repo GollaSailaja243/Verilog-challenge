@@ -1,0 +1,49 @@
+module jkff(
+  input clk, rst, j, k,
+  output reg qn
+);
+
+  always @(posedge clk) begin
+    if (rst)
+      qn <= 0;   
+    else begin
+      case ({j,k})
+        2'b00: qn <= qn;   
+        2'b01: qn <= 0;   
+        2'b10: qn <= 1;    
+        2'b11: qn <= ~qn; 
+        default:qn<=0;
+      endcase
+    end
+  end
+endmodule
+/////////////////////////////////////////////////////////
+module tb;
+  
+  wire qn;
+  reg j,k,clk,rst;
+  
+  initial begin
+    clk=0;
+    rst=0;
+    #10 rst=1;
+    rst=0;
+  end
+  always #5clk=~clk;
+  jkff dut(clk,rst,j,k,qn);
+  
+  initial begin
+    $monitor("j:%b  || k :%b  || qn:%b ",j,k,qn);
+    for(int i=0;i<10;i++)begin
+      k=$urandom;
+      j=$urandom;
+      #10;
+    end
+   #110 $finish;
+  end
+  initial begin
+    $dumpfile("dump.vcd");
+    $dumpvars;
+  end
+  
+endmodule
