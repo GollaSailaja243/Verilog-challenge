@@ -1,0 +1,34 @@
+module comparator(
+  input [3:0]a,b,
+  output reg g,l,e
+
+
+);
+  always@(*)begin
+    if(a>b)
+    {g,l,e}='b100;
+    else if(a<b)
+    {g,l,e}='b010;
+    else
+    {g,l,e}='b001;
+  end
+  
+endmodule
+//////////////////////////////////////////////////////
+module tb;
+  
+  wire g,l,e;
+  reg [3:0]a,b;
+  comparator dut(a,b,g,l,e);
+  
+  initial begin
+    $monitor("a:%b  || b :%b  || res:%b ",a,b,{g,l,e});
+    for(int i=0;i<16;i++)begin
+       a=$urandom_range(0,15);
+        b=i;
+      #5;
+    end
+    $finish;
+  end
+  
+endmodule
