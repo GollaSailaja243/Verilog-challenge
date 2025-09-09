@@ -1,0 +1,28 @@
+// Code your design here
+module even_parity_gen(
+  input [2:0]sen,
+  output  par,
+  output [3:0]rec
+
+);
+  assign par=sen[0]^sen[1]^sen[2],
+    rec={sen,par};
+  
+endmodule
+///////////////////////////////////////////////////////
+module tb;
+  reg [2:0]sen;
+  wire par;
+  wire[3:0]rec;
+  even_parity_gen dut(sen,par,rec);
+  
+  initial begin
+    $monitor("sen:%b  || par :%b  || rec:%b ",sen,par,rec);
+    for(int i=0;i<8;i++)begin
+      #5 sen=i;
+      
+    end
+    $finish;
+  end
+  
+endmodule
