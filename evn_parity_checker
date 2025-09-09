@@ -1,0 +1,23 @@
+module even_parity_checker(
+  input [2:0]sen,
+  output  par
+
+);
+  assign par=sen[0]^sen[1]^sen[2];
+endmodule
+////////////////////////////////////////////////////////////////////////////
+module tb;
+  reg [2:0]sen;
+  wire par;
+   even_parity_checker dut(sen,par);
+  
+  initial begin
+    $monitor("sen:%b  ||  par:%b ",sen,par);
+    for(int i=0;i<8;i++)begin
+      #5 sen=i;
+      
+    end
+    $finish;
+  end
+  
+endmodule
