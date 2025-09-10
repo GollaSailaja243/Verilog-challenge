@@ -1,0 +1,138 @@
+
+// Code your design here
+// Code your design here
+module tff(
+input clk,rst,t,
+  output reg qn
+);
+  
+  always@(posedge clk,posedge rst)
+  begin
+    if(rst)
+      qn=0;
+    else if(t)
+      qn=~qn;
+    else
+      qn=qn;
+    
+  end
+endmodule
+
+  module upc(
+  input clk,rst,
+    input [3:0]t1,
+    output reg [3:0]upcount
+  );
+   
+    tff t5(clk,rst,t1[0],upcount[0]);
+    tff t6(~upcount[0],rst,t1[1],upcount[1]);
+    tff t7(~upcount[1],rst,t1[2],upcount[2]);
+    tff t8(~upcount[2],rst,t1[3],upcount[3]);
+endmodule
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+module tb;
+  reg clk,rst;
+  
+  reg [3:0]t1;
+  wire [3:0]upcount;
+
+
+  initial begin
+     clk = 0;
+  forever #500 clk = ~clk;
+  end
+  
+  upc dut(clk,rst,t1,upcount);
+ 
+  initial begin
+#5rst=1;
+    
+    #20; 
+    rst = 0;
+   
+   
+    #5t1[0]=1;
+    t1[1]=1;
+    t1[2]=1;
+    t1[3]=1;
+     
+    #50000;
+    $finish;
+  end
+  initial begin
+    $monitor("upcount=%d",upcount);
+  end
+  initial begin
+    $dumpfile("file.vcd");
+    $dumpvars;
+  end
+
+endmodule
+//***********************************************************************or another method***********************************************************************
+
+// Code your design here
+// Code your design here
+module upc(
+  input clk,rst,
+  output reg [3:0]qn
+);
+  initial qn=0;
+  always@(negedge clk)
+ begin
+      qn[0]=~qn[0];
+    
+  end
+  always@(negedge qn[0])
+  begin
+    qn[1]=~qn[1];
+    
+  end
+  always@(negedge qn[1])
+  begin
+    qn[2]=~qn[2];
+    
+  end
+  always@(negedge qn[2])
+  begin
+    qn[3]=~qn[3];
+    
+  end
+  
+endmodule
+/////////////////////////////////////////////////////
+module tb;
+  reg clk,rst;
+  
+
+  wire [3:0]qn;
+
+
+  initial begin
+     clk = 0;
+  forever #5 clk = ~clk;
+  end
+  
+  upc dut(clk,rst,qn);
+ 
+  initial begin
+#5rst=1;
+    
+    #20; 
+    rst = 0;
+   
+   #100;
+    rst=1;
+   
+    #500;
+    $finish;
+  end
+  initial begin
+    $monitor("upcount=%d",qn);
+  end
+  initial begin
+    $dumpfile("file.vcd");
+    $dumpvars;
+  end
+
+endmodule
