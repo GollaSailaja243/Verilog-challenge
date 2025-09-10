@@ -1,0 +1,47 @@
+// Code your design here
+module register(
+  input en,clk,[3:0]in,
+  output reg [3:0]op
+
+);
+  always@(posedge clk) begin
+    if(en)
+      op<=in;
+    else
+      op<=0;  
+  end
+endmodule
+/////////////////////////////////////////////////////////
+
+module tb;
+  reg en,clk;
+  reg [3:0]in;
+  wire [3:0]op;
+  
+  register dut(en,clk,in,op);
+  
+  initial begin
+    clk=0;
+    en=0;
+  end
+  always #5 clk=~clk;
+  
+  initial begin
+    $monitor("en:%b || in:%b || op:%b ",en,in,op);
+    #10 in=4;
+    #10 en=1;
+    #10 in=12;
+    #10 en=0;
+    #10 in=14;
+    #10 in=15;
+    #10 en=1;
+     #10 in=10;
+    
+    $finish;
+  end
+  initial begin
+    $dumpfile("dump.vcd");
+    $dumpvars;
+  end
+  
+endmodule
