@@ -1,0 +1,47 @@
+// Code your design here
+module syncntr(
+  input rst,clk,
+  output reg [3:0]op
+
+);
+  always@(posedge clk) begin
+    if(!rst)
+      op=op+1;
+    else
+      op<=0;  
+  end
+endmodule
+
+///////////////////////////////////////////////////////////////////////
+module tb;
+  reg rst,clk;
+ 
+  wire [4:0]op;
+  
+  syncntr dut(rst,clk,op);
+  
+  initial begin
+    clk=0;
+    rst=0;
+  end
+  always #5 clk=~clk;
+  
+  initial begin
+    $monitor("rst:%b ||  op:%b ",rst,op);
+  
+  rst=1;
+    
+    #10rst=0;
+    
+    #100 rst=1;
+    #10 rst=0;
+    #60 rst=1;
+    
+    $finish;
+  end
+  initial begin
+    $dumpfile("dump.vcd");
+    $dumpvars;
+  end
+  
+endmodule
