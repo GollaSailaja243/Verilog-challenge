@@ -1,0 +1,61 @@
+module up_dn_cntr(
+  input clk,rst,udc,
+  output reg [3:0]updncnt
+
+
+);
+  always@(posedge clk)begin
+    if(rst)
+      updncnt=0;
+    else begin
+      if(udc) begin
+        if(updncnt==15)
+          updncnt=0;
+        else
+          updncnt=updncnt+1;
+      end
+      else begin
+        if(updncnt==0)
+           updncnt=15;
+        else
+          updncnt=updncnt-1;
+        
+      end
+         
+    end
+   
+  end
+endmodule
+////////////////////////////////////////////////////////////////////////////////////////
+module tb;
+  reg clk,rst,udc;
+  wire [3:0]updncnt;
+  
+  up_dn_cntr dut(clk,rst,udc,updncnt);
+  
+  initial begin
+    clk=0;
+    rst=0;
+  
+    
+  end
+  always #5clk= ~clk;
+  
+  initial begin
+    $monitor("udc:%b || updncnt :%b",udc,updncnt);
+    
+   #10 rst=1;
+    #20 rst=0;
+    #10 udc=1;
+    #100 udc=0;
+    
+    
+  end
+  initial begin
+    $dumpfile("dump.vcd");
+    $dumpvars;
+    #500 $finish;
+  end
+  
+  
+endmodule
