@@ -1,0 +1,106 @@
+// 1010 mealy fsm 
+module seqdet(
+input clk,rst,in,
+output reg op);
+  parameter s0=3'b000,s1=3'b001,s2=3'b010,s3=3'b011,s4=3'b100;
+  reg [2:0]cstate,nstate;
+  always@(posedge clk or posedge rst)
+    begin 
+      if(rst)
+        cstate=s0;
+      else
+        cstate=nstate;
+    end
+  always@(*)
+    begin
+      case(cstate)
+        s0:  if(in) begin
+             nstate<=s1;
+              op<=0;
+              end
+             else begin
+               nstate<=s0;
+               op<=0;
+             end
+        s1:  if(in) begin
+             nstate<=s1;
+              op<=0;
+              end
+             else begin
+               nstate<=s2;
+               op<=0;
+             end
+          s2: if(in) begin
+             nstate<=s3;
+              op<=0;
+              end
+             else begin
+               nstate<=s0;
+               op<=0;
+             end
+        s3: if(in) begin
+             nstate<=s1;
+              op<=0;
+              end
+             else begin
+               nstate<=s4;
+               op<=0;
+             end
+        s4: if(in) begin
+             nstate<=s1;
+              op<=0;
+              end
+             else begin
+               nstate<=s0;
+               op<=1;
+             end
+        default :nstate<=s0;
+      endcase
+    end
+  
+endmodule
+
+/////////////////////////////////////////////////////////////////////
+module tb;
+  reg clk,rst,in;
+  wire op;
+  initial begin
+    clk=0;
+    forever #5 clk=~clk;
+  end
+  seqdet s(clk,rst,in,op);
+  initial begin 
+    $monitor("in=%b,op=%b",in,op);
+  
+  end
+  initial begin
+    in=0;
+    rst=1;
+    #30 rst = 0;
+    #40 in = 0;
+    #10 in = 1;
+    #10 in = 0;
+    #10 in = 1;
+    #10 in = 0;
+    #10 in = 1;
+    #10 in = 0;
+    #10 in = 1;
+    #10 in = 0;
+    #10 in = 1;
+    #10 in = 1;
+    #10 in = 0;
+    
+    
+    #200 $finish;
+    
+  end
+  initial begin
+    $dumpfile("dump.vcd");
+    $dumpvars;
+  end
+  
+endmodule
+        
+
+
+
