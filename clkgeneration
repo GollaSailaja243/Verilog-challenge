@@ -1,0 +1,35 @@
+module calc (
+  input real freq, input real dutycycle, 
+  output real ton, output real toff,
+  output reg clk,output reg [7:0]count
+);
+assign ton = (1.0 / freq) * dutycycle * 1000000000,
+  toff =  (1000000000 / freq) -ton;
+  always begin
+     # toff ;
+    clk=1;
+    # ton ; 
+    clk=0;
+  end
+endmodule
+
+////////////////////////////////////////////////////////////////////////////////////
+
+module tb();
+ real freq,dutycycle;
+  real ton,toff,clk;
+  wire [7:0]count;
+ 
+  calc dut(freq,dutycycle,ton,toff,clk,count);
+  initial begin
+    freq=100000000;dutycycle=0.5;
+    #800;
+    $finish();
+  end
+  initial begin
+    $dumpfile("file.vcd");
+    $dumpvars;
+  end
+endmodule
+
+ 
