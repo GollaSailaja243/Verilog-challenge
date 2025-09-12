@@ -66,8 +66,9 @@ module tb;
   wire op;
   initial begin
     clk=0;
-    forever #5 clk=~clk;
+    
   end
+always #5 clk=~clk;
   seqdet s(clk,rst,in,op);
   initial begin 
     $monitor("in=%b,op=%b",in,op);
