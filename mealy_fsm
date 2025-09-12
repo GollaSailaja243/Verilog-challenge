@@ -1,9 +1,9 @@
-// 1010 mealy fsm 
+// 1010 overlapping
 module seqdet(
 input clk,rst,in,
 output reg op);
-  parameter s0=3'b000,s1=3'b001,s2=3'b010,s3=3'b011,s4=3'b100;
-  reg [2:0]cstate,nstate;
+  parameter s0=2'b00,s1=2'b01,s2=2'b10,s3=2'b11;
+  reg [1:0]cstate,nstate;
   always@(posedge clk or posedge rst)
     begin 
       if(rst)
@@ -43,32 +43,25 @@ output reg op);
               op<=0;
               end
              else begin
-               nstate<=s4;
-               op<=0;
-             end
-        s4: if(in) begin
-             nstate<=s1;
-              op<=0;
-              end
-             else begin
-               nstate<=s0;
+               nstate<=s2;
                op<=1;
              end
+        
         default :nstate<=s0;
       endcase
     end
   
 endmodule
-
-/////////////////////////////////////////////////////////////////////
+   
+ // Code your testbench here
+// or browse Examples
 module tb;
   reg clk,rst,in;
   wire op;
   initial begin
     clk=0;
-    
+    forever #5 clk=~clk;
   end
-always #5 clk=~clk;
   seqdet s(clk,rst,in,op);
   initial begin 
     $monitor("in=%b,op=%b",in,op);
@@ -101,7 +94,6 @@ always #5 clk=~clk;
   end
   
 endmodule
-        
 
 
 
