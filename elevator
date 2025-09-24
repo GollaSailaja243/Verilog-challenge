@@ -1,0 +1,100 @@
+// Code your design here
+module elevator(
+   input clk, reset,
+  input [3:0] floor_req,
+  output reg [3:0] floor_pos
+);
+
+parameter IDLE = 3'b000;
+parameter MOVING_UP = 3'b001;
+parameter MOVING_DOWN = 3'b010;
+parameter STOPPED = 3'b011;
+
+reg [2:0] state; 
+reg [4:0] floor_req_reg; 
+reg [4:0] floor_pos_reg; 
+
+always @(posedge clk, posedge reset) begin
+   if (reset) begin
+       state <= IDLE;
+       floor_req_reg <= 5'b00000;
+       floor_pos_reg <= 5'b00000;
+       floor_pos <= floor_pos_reg;
+   end else begin
+       case (state)
+           IDLE: begin
+               if (floor_req != 5'b00000) begin
+                   if (floor_req > floor_pos_reg) begin
+                       state <= MOVING_UP; 
+                   end else if (floor_req < floor_pos_reg) begin
+                       state <= MOVING_DOWN;
+                   end else begin
+                       state <= STOPPED; 
+                   end
+               end
+           end
+           MOVING_UP: begin
+               if (floor_pos_reg == floor_req) begin
+                   state <= STOPPED; 
+               end else begin
+                   floor_pos_reg <= floor_pos_reg + 1; 
+               end
+           end
+           MOVING_DOWN: begin
+               if (floor_pos_reg == floor_req) begin
+                   state <= STOPPED; 
+               end else begin
+                   floor_pos_reg <= floor_pos_reg - 1; 
+               end
+           end
+           STOPPED: begin
+               floor_req_reg <= 1'b0; 
+               if (floor_req != 5'b00000) begin
+                   if (floor_req > floor_pos_reg) begin
+                       state <= MOVING_UP; 
+                   end else if (floor_req < floor_pos_reg) begin
+                       state <= MOVING_DOWN;
+                   end else begin
+                       state <= STOPPED; 
+                   end
+               end else begin
+                   state <= IDLE; 
+               end
+           end
+       endcase
+       floor_pos <= floor_pos_reg;
+       floor_req_reg <= floor_req;
+   end
+end
+
+endmodule
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+module tb;
+  reg clk,reset;
+  reg [3:0]floor_req;
+  wire [3:0]floor_pos;
+  initial begin
+    reset=0;
+    clk=0;
+  end
+  always #5clk=~clk;
+  elevator dut(clk,reset,floor_req,floor_pos);
+  
+  initial begin
+    $monitor("floor_req:%d || floor_pos:%d ||state:%d ",floor_req,floor_pos,dut.state);
+    reset=1;
+    #40 reset=0;
+    #10 floor_req=2;
+    #40 floor_req=4;
+    #50 floor_req=9;
+   #70 floor_req=6;
+    #50$finish;
+  end
+  
+  initial begin
+    $dumpfile("file.vcd");
+    $dumpvars;
+  end
+  
+endmodule
